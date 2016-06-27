@@ -1,8 +1,40 @@
+
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         //Add code here to test your solutions
+
+        int[] intArr = {1,6,324,88,4,35,45, 6, 45,33};
+        int[] sAndL = findLargestAndSmallest(intArr);
+        System.out.println("Smallest and largest");
+        for (int i = 0; i < 2; i ++){
+            System.out.println(sAndL[i]);
+        }
+
+        List<Integer> lInts = new ArrayList<>();
+        for(int i = 0; i < intArr.length; i++)
+            lInts.add(intArr[i]);
+
+        System.out.println("Sum of two largest: " + sumOfTwoLargest(lInts));
+
+        System.out.println("Remove duplicates:");
+        printList(removeDuplicatesFromList(lInts));
+
+
+        int[] array1 = {1,4,7,9,0,0,0};
+        int[] array2 = {1,5,11};
+        
+        System.out.println("Merging and sorting:");
+
+        int[] merged = mergeSortedArrays(array1,array2);
+
+
+        for (int i = 0; i < merged.length; i ++){
+            System.out.println(merged[i]);
+        }
+
+
     }
 
     /**
@@ -16,6 +48,19 @@ public class Main {
      * @return An array of integers with two elements, the largest and smallest from the method parameter
      */
     public static int[] findLargestAndSmallest(int array[]){
+        int[] sAndLInts = {array[0], array[0]};
+
+        for (int i = 1; i < array.length; i++){
+
+            if (array[i] < sAndLInts[0]){
+                sAndLInts[0] = array[i];
+                continue;
+            }
+            if (array[i] > sAndLInts[1])
+                sAndLInts[1] = array[i];
+        }
+
+        return sAndLInts;
 
     }
 
@@ -31,10 +76,36 @@ public class Main {
      * @param intList A List of integers of any size.
      * @return Sum of the two largest values
      */
-    public static int sumOfTwoLargest(List intList){
-       
-    }
 
+    public static int sumOfTwoLargest(List intList){
+        int[] intArray = listToIntArray(intList);
+
+        int largest, secondLargest;
+        if (intArray.length == 0)
+            return 0;
+        else if (intArray.length == 1)
+            return intArray[0];
+        else {
+            int indexOfLargest = 0;
+            largest = intArray[0];
+            secondLargest = intArray[0];
+            for (int i = 1; i < intArray.length; i++) {
+                if(intArray[i] > largest){
+                    largest = intArray[i];
+                    indexOfLargest = i;
+                }
+            }
+
+            intArray = removeElement(intArray, indexOfLargest);
+            for (int i = 1; i < intArray.length; i++) {
+                if(intArray[i] > secondLargest)
+                    secondLargest = intArray[i];
+            }
+        }
+
+        return largest + secondLargest;
+
+    }
 
     /**
      * Question3: Remove duplicates from a List
@@ -51,7 +122,18 @@ public class Main {
      * @return A List of Integers that doesn't contain duplicates.
      */
     public static List removeDuplicatesFromList(List intList){
+        Collections.sort(intList);
 
+        int temp = (int) intList.get(0);
+
+        for (int i = 1; i < intList.size(); i++){
+            if (temp == (int) intList.get(i))
+                intList.remove(i);
+            else
+                temp = (int) intList.get(i);
+        }
+
+        return intList;
     }
 
 
@@ -78,6 +160,53 @@ public class Main {
      * @return Array of sorted integers, merged from array1 and array2
      */
     public static int[] mergeSortedArrays(int[] array1, int[] array2){
-        return null;
+        int array2Index = 0;
+        //merge first
+        for(int i = 0; i < array1.length; i++) {
+            if(array1[i] == 0){
+                array1[i] = array2[array2Index++];
+            }
+        }
+        //then sort
+        for(int i = 0; i < array1.length; i++){
+            for (int j = 1; j < array1.length - i; j++){
+                if(array1[j-1] > array1[j]){
+                    //swap
+                    int temp = array1[j-1];
+                    array1[j -1] = array1[j];
+                    array1[j] = temp;
+                }
+            }
+        }
+
+        return array1;
     }
+
+    /*
+       * Helper methods
+     */
+
+    public static int[] removeElement(int[] original, int element){
+        int[] n = new int[original.length - 1];
+        System.arraycopy(original, 0, n, 0, element );
+        System.arraycopy(original, element+1, n, element, original.length - element-1);
+        return n;
+    }
+
+
+    public static int[] listToIntArray(List intList){
+        int[] ints = new int[intList.size()];
+
+        for (int i = 0; i < ints.length; i++){
+            ints[i] = (int) intList.get(i);
+        }
+        return ints;
+    }
+
+
+    public static void printList(List list){
+        for (int i = 0; i < list.size(); i++)
+            System.out.println(list.get(i).toString());
+    }
+
 }
